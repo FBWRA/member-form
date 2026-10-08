@@ -444,12 +444,12 @@
 
       <p class="section-title">Declaration</p>
       <div class="consent-block">
-        <input type="checkbox" id="consent" name="consent" required>
+        <input type="checkbox" id="consent" name="consent" required autocomplete="off">
         <label for="consent">I/We apply to join Friern Barnet &amp; Whetstone Residents' Association and agree to be bound by the rules and constitution of the Association. <span class="req">*</span></label>
       </div>
 
       <div class="consent-block">
-        <input type="checkbox" id="privacy" name="privacy" required>
+        <input type="checkbox" id="privacy" name="privacy" required autocomplete="off">
         <label for="privacy">I have read and accept the FBWRA privacy notice below. <span class="req">*</span></label>
       </div>
 
@@ -474,7 +474,7 @@
 
 <script>
   // Always start with consent boxes unticked, regardless of browser cache
-  window.addEventListener('load', () => {
+  window.addEventListener('pageshow', () => {
     document.getElementById('consent').checked = false;
     document.getElementById('privacy').checked = false;
   });
