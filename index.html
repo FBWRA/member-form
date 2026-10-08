@@ -51,7 +51,7 @@
 
   .site-header h1 {
     font-family: 'Inter', system-ui, sans-serif;
-    font-size: clamp(1rem, 4vw, 1.35rem);
+    font-size: clamp(1.4rem, 5vw, 2rem);
     font-weight: 700;
     margin: 0 0 1.25rem;
     text-wrap: balance;
@@ -60,9 +60,17 @@
     color: var(--header-fg);
   }
 
+  .header-intro {
+    font-size: 0.9rem;
+    color: var(--fg);
+    margin: 0.75rem auto 0;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
   .site-header h2 {
     font-family: 'Inter', system-ui, sans-serif;
-    font-size: clamp(1.1rem, 4vw, 1.4rem);
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
     font-weight: 700;
     margin: 0;
     color: var(--header-sub, #2a5298);
@@ -117,7 +125,9 @@
     color: var(--fg);
   }
 
-  .field label .req {
+  .field label .req,
+  .section-title .req,
+  .consent-block label .req {
     color: var(--error);
     margin-left: 2px;
   }
@@ -269,20 +279,97 @@
     color: var(--muted);
     margin-top: 0.1rem;
   }
+
+  .privacy-note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+    margin: 0 0 1.5rem;
+  }
+
+  .additional-member {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .additional-member .member-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .additional-member .member-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--accent);
+  }
+
+  .btn-remove {
+    background: none;
+    border: none;
+    color: var(--error);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0;
+    font-family: inherit;
+  }
+
+  .btn-add {
+    background: none;
+    border: 1.5px dashed var(--accent);
+    border-radius: 7px;
+    color: var(--accent);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    transition: background 0.2s;
+  }
+
+  .btn-add:hover {
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
 </style>
 
 <header class="site-header">
   <img src="fbwra_logo_clean2.png" alt="FBWRA Logo">
   <h1>Friern Barnet &amp; Whetstone Residents Association</h1>
   <h2>Become a Member</h2>
+  <p class="header-intro">Join us to help influence what happens in our area. We represent residents of Friern Barnet, Whetstone and North Finchley.<br><br><strong>Membership costs just £5 per year per household.</strong></p>
 </header>
 
 <main class="form-wrap">
   <div class="card">
 
     <div id="form-area">
+      <p style="font-size:0.78rem;color:var(--error);margin:0 0 0.75rem;"><span style="font-weight:700;">*</span> Indicates required field</p>
       <p class="section-title">Personal Details</p>
-      <div class="field-group">
+      <div class="field-group" id="primary-member">
+        <div style="display:flex; gap:0.75rem; align-items:flex-end;">
+          <div class="field" style="width:20%;">
+            <label for="title">Title <span class="req">*</span></label>
+            <select id="title" name="title" required onchange="toggleOtherTitle(this, 'title-other')">
+              <option value="">—</option>
+              <option>Mr</option>
+              <option>Mrs</option>
+              <option>Ms</option>
+              <option>Miss</option>
+              <option>Dr</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field" id="title-other" hidden style="flex:1;">
+            <label for="title-other-input">Please specify</label>
+            <input type="text" id="title-other-input" name="title_other">
+          </div>
+        </div>
         <div class="field-row">
           <div class="field">
             <label for="first-name">First name <span class="req">*</span></label>
@@ -293,32 +380,39 @@
             <input type="text" id="last-name" name="last_name" autocomplete="family-name" required>
           </div>
         </div>
-
         <div class="field">
           <label for="email">Email address <span class="req">*</span></label>
           <input type="email" id="email" name="email" autocomplete="email" required>
         </div>
-
         <div class="field">
-          <label for="phone">Phone number</label>
+          <label for="phone">Telephone</label>
           <input type="tel" id="phone" name="phone" autocomplete="tel">
         </div>
       </div>
 
+      <p class="privacy-note">We do not use your phone numbers or email addresses for anything other than FBWRA-related matters.</p>
+
+      <div id="additional-members"></div>
+      <button type="button" class="btn-add" onclick="addMember()">+ Add another household member</button>
+
       <p class="section-title">Address</p>
       <div class="field-group">
         <div class="field">
+          <label for="door">Door no. / House name <span class="req">*</span></label>
+          <input type="text" id="door" name="door" autocomplete="address-line1" required>
+        </div>
+        <div class="field">
           <label for="address1">Address line 1 <span class="req">*</span></label>
-          <input type="text" id="address1" name="address1" autocomplete="address-line1" required>
+          <input type="text" id="address1" name="address1" autocomplete="address-line2" required>
         </div>
         <div class="field">
           <label for="address2">Address line 2</label>
-          <input type="text" id="address2" name="address2" autocomplete="address-line2">
+          <input type="text" id="address2" name="address2" autocomplete="address-line3">
         </div>
         <div class="field-row">
           <div class="field">
-            <label for="town">Town / City <span class="req">*</span></label>
-            <input type="text" id="town" name="town" autocomplete="address-level2" required>
+            <label for="locality">Locality <span class="req">*</span></label>
+            <input type="text" id="locality" name="locality" placeholder="e.g. Whetstone" required>
           </div>
           <div class="field">
             <label for="postcode">Postcode <span class="req">*</span></label>
@@ -327,38 +421,41 @@
         </div>
       </div>
 
-      <p class="section-title">Membership Type</p>
-      <div class="membership-options">
-        <label class="membership-option">
-          <input type="radio" name="membership" value="individual" checked>
-          <span class="opt-label">Individual</span>
-          <span class="opt-price">£5 / year</span>
-        </label>
-        <label class="membership-option">
-          <input type="radio" name="membership" value="household">
-          <span class="opt-label">Household</span>
-          <span class="opt-price">£8 / year</span>
-        </label>
-        <label class="membership-option">
-          <input type="radio" name="membership" value="concession">
-          <span class="opt-label">Concession (over 65 / unwaged)</span>
-          <span class="opt-price">£3 / year</span>
-        </label>
-      </div>
-
-      <hr class="divider">
-
-      <p class="section-title">Anything else?</p>
-      <div class="field-group">
-        <div class="field">
-          <label for="comments">Comments or questions</label>
-          <textarea id="comments" name="comments" rows="3" placeholder="Any local issues you'd like to raise, or questions for us…"></textarea>
+      <p class="section-title">Newsletter Delivery <span class="req">*</span></p>
+      <div class="field-group" style="margin-bottom:1.5rem;">
+        <div class="field" style="width:40%;">
+          <select id="newsletter" name="newsletter" required>
+            <option value="">Click to choose</option>
+            <option value="email">Email</option>
+            <option value="hand">By hand to house</option>
+          </select>
         </div>
       </div>
 
+
+
+
+      <div class="field-group">
+        <div class="field">
+          <label for="heard">How did you hear about FBWRA?</label>
+          <input type="text" id="heard" name="heard">
+        </div>
+      </div>
+
+      <p class="section-title">Declaration</p>
       <div class="consent-block">
         <input type="checkbox" id="consent" name="consent" required>
-        <label for="consent">I agree to FBWRA holding my contact details for membership purposes. My information will not be shared with third parties.</label>
+        <label for="consent">I/We apply to join Friern Barnet &amp; Whetstone Residents' Association and agree to be bound by the rules and constitution of the Association. <span class="req">*</span></label>
+      </div>
+
+      <div class="consent-block">
+        <input type="checkbox" id="privacy" name="privacy" required>
+        <label for="privacy">I have read and accept the FBWRA privacy notice below. <span class="req">*</span></label>
+      </div>
+
+      <div style="font-size:0.8rem;color:var(--muted);background:color-mix(in srgb, var(--accent) 6%, var(--card));border:1px solid var(--border);border-radius:7px;padding:1rem;margin-bottom:1.5rem;line-height:1.6;">
+        <strong style="color:var(--fg);">Data Protection</strong><br>
+        The information you provide in this form is provided by you on a voluntary basis and will be used by FBWRA on the basis of our legitimate interests, such as maintaining our membership records, sending you the Newsletter, communicating with you and in connection with our activities as a residents' association. Please see our Data Protection Notice on our website at <a href="https://www.fbwra.org/data-protection/" target="_blank" style="color:var(--accent);">fbwra.org</a>. This contains important information about things such as how we use the information you provide to us, how long we may keep it, your rights under the data protection legislation, how you can raise any concerns you have with us and how you can complain.
       </div>
 
       <button class="btn-submit" type="button" onclick="submitForm()">Submit Application</button>
@@ -376,6 +473,69 @@
 </main>
 
 <script>
+  let memberCount = 0;
+
+  function toggleOtherTitle(sel, wrapperId) {
+    document.getElementById(wrapperId).hidden = sel.value !== 'Other';
+  }
+
+  function addMember() {
+    memberCount++;
+    const n = memberCount;
+    const container = document.getElementById('additional-members');
+    const div = document.createElement('div');
+    div.className = 'additional-member';
+    div.id = 'member-' + n;
+    div.innerHTML = `
+      <div class="member-header">
+        <span class="member-label">Additional Household Member ${n}</span>
+        <button type="button" class="btn-remove" onclick="removeMember(${n})">Remove</button>
+      </div>
+      <div class="field-group">
+        <div style="display:flex; gap:0.75rem; align-items:flex-end;">
+          <div class="field" style="width:20%;">
+            <label for="m${n}-title">Title</label>
+            <select id="m${n}-title" name="member${n}_title" onchange="toggleOtherTitle(this, 'm${n}-other')">
+              <option value="">—</option>
+              <option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field" id="m${n}-other" hidden style="flex:1;">
+            <label for="m${n}-title-text">Please specify</label>
+            <input type="text" id="m${n}-title-text" name="member${n}_title_other">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="m${n}-first">First name</label>
+            <input type="text" id="m${n}-first" name="member${n}_first">
+          </div>
+          <div class="field">
+            <label for="m${n}-last">Last name</label>
+            <input type="text" id="m${n}-last" name="member${n}_last">
+          </div>
+        </div>
+        <div class="field">
+          <label for="m${n}-email">Email address</label>
+          <input type="email" id="m${n}-email" name="member${n}_email">
+        </div>
+        <div class="field">
+          <label for="m${n}-phone">Telephone</label>
+          <input type="tel" id="m${n}-phone" name="member${n}_phone">
+        </div>
+      </div>`;
+    container.appendChild(div);
+  }
+
+  function removeMember(n) {
+    const el = document.getElementById('member-' + n);
+    if (el) el.remove();
+  }
+
+  // Replace this URL with your deployed Apps Script web app URL
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzs1eiq2b6VLPRkZJXHVCBSZrLInjqru6F-yeaDQW8J0r217lHgJ4JJaiNeFVrJMx_w/exec';
+
   function submitForm() {
     const required = document.querySelectorAll('[required]');
     let ok = true;
@@ -384,11 +544,63 @@
       if (el.type !== 'checkbox' && !el.value.trim()) ok = false;
     });
     if (!ok) {
-      alert('Please fill in all required fields and accept the consent statement.');
+      alert('Please fill in all required fields and tick both checkboxes.');
       return;
     }
-    document.getElementById('form-area').hidden = true;
-    document.getElementById('success-area').hidden = false;
+
+    // Gather all form data
+    const data = {
+      title: document.getElementById('title').value,
+      title_other: document.getElementById('title-other-input').value,
+      first_name: document.getElementById('first-name').value,
+      last_name: document.getElementById('last-name').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      door: document.getElementById('door').value,
+      address1: document.getElementById('address1').value,
+      address2: document.getElementById('address2').value,
+      locality: document.getElementById('locality').value,
+      postcode: document.getElementById('postcode').value,
+      newsletter: document.getElementById('newsletter').value,
+      heard: document.getElementById('heard').value,
+    };
+
+    // Additional household members
+    let n = 1;
+    while (document.getElementById('member-' + n)) {
+      data[`member${n}_title`] = document.getElementById(`m${n}-title`)?.value || '';
+      data[`member${n}_title_other`] = document.getElementById(`m${n}-title-text`)?.value || '';
+      data[`member${n}_first`] = document.getElementById(`m${n}-first`)?.value || '';
+      data[`member${n}_last`] = document.getElementById(`m${n}-last`)?.value || '';
+      data[`member${n}_email`] = document.getElementById(`m${n}-email`)?.value || '';
+      data[`member${n}_phone`] = document.getElementById(`m${n}-phone`)?.value || '';
+      n++;
+    }
+
+    const btn = document.querySelector('.btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === 'ok') {
+        document.getElementById('form-area').hidden = true;
+        document.getElementById('success-area').hidden = false;
+      } else {
+        alert('Something went wrong: ' + (res.message || 'please try again.'));
+        btn.disabled = false;
+        btn.textContent = 'Submit Application';
+      }
+    })
+    .catch(() => {
+      alert('Could not submit the form. Please check your connection and try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit Application';
+    });
   }
 </script>
 
