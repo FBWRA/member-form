@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
 
 <style>
-  /* Layout: single-column, phone-first, header + form card on cyan ground */
   :root {
     --bg: #d8f2f7;
     --card: #d8f2f7;
@@ -34,7 +33,6 @@
     padding-inline: 0;
   }
 
-  /* HEADER */
   .site-header {
     background: var(--header-bg);
     color: var(--header-fg);
@@ -78,7 +76,6 @@
     text-transform: uppercase;
   }
 
-  /* FORM CARD */
   .form-wrap {
     max-width: 560px;
     margin: 0 auto;
@@ -171,52 +168,6 @@
     .field-row { grid-template-columns: 1fr; }
   }
 
-  /* Membership type */
-  .membership-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .membership-option {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: var(--input-bg);
-    border: 1.5px solid var(--border);
-    border-radius: 7px;
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-  }
-
-  .membership-option:has(input:checked) {
-    border-color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 8%, var(--input-bg));
-  }
-
-  .membership-option input[type="radio"] {
-    accent-color: var(--accent);
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-  }
-
-  .membership-option .opt-label {
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-
-  .membership-option .opt-price {
-    margin-left: auto;
-    font-weight: 700;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-
-  /* Consent */
   .consent-block {
     display: flex;
     gap: 0.75rem;
@@ -234,7 +185,39 @@
     margin-top: 2px;
   }
 
-  /* Submit */
+  /* Payment button */
+  .btn-pay {
+    width: 100%;
+    background: #635bff;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-pay:hover { background: #4f46e5; }
+  .btn-pay:focus-visible {
+    outline: 3px solid #635bff;
+    outline-offset: 3px;
+  }
+
+  .btn-pay svg {
+    width: 44px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* Submitting state button */
   .btn-submit {
     width: 100%;
     background: var(--accent);
@@ -250,13 +233,6 @@
     transition: background 0.2s;
   }
 
-  .btn-submit:hover { background: var(--accent-light); }
-  .btn-submit:focus-visible {
-    outline: 3px solid var(--accent);
-    outline-offset: 3px;
-  }
-
-  /* Success message */
   .success-msg {
     background: var(--success-bg);
     color: var(--success-fg);
@@ -336,6 +312,28 @@
   .btn-add:hover {
     background: color-mix(in srgb, var(--accent) 8%, transparent);
   }
+
+  /* Payment status banner */
+  .payment-banner {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 7px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .submitting-msg {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
 </style>
 
 <header class="site-header">
@@ -350,6 +348,12 @@
 
     <div id="form-area">
       <p style="font-size:0.78rem;color:var(--error);margin:0 0 0.75rem;"><span style="font-weight:700;">*</span> Indicates required field</p>
+
+      <!-- Payment confirmed banner (shown on return from Stripe) -->
+      <div id="payment-banner" class="payment-banner" hidden>
+        ✓ Payment confirmed — please review your details below and click Submit.
+      </div>
+
       <p class="section-title">Personal Details</p>
       <div class="field-group" id="primary-member">
         <div style="display:flex; gap:0.75rem; align-items:flex-end;">
@@ -432,9 +436,6 @@
         </div>
       </div>
 
-
-
-
       <div class="field-group">
         <div class="field">
           <label for="heard">How did you hear about FBWRA?</label>
@@ -458,8 +459,21 @@
         The information you provide in this form is provided by you on a voluntary basis and will be used by FBWRA on the basis of our legitimate interests, such as maintaining our membership records, sending you the Newsletter, communicating with you and in connection with our activities as a residents' association. Please see our Data Protection Notice on our website at <a href="https://www.fbwra.org/data-protection/" target="_blank" style="color:var(--accent);">fbwra.org</a>. This contains important information about things such as how we use the information you provide to us, how long we may keep it, your rights under the data protection legislation, how you can raise any concerns you have with us and how you can complain.
       </div>
 
-      <button class="btn-submit" type="button" onclick="submitForm()">Submit Application</button>
-      <p class="field-hint" style="text-align:center;margin-top:0.75rem;">We'll be in touch within a few days to confirm your membership.</p>
+      <!-- Pay button (shown before payment) -->
+      <div id="pay-btn-area">
+        <button class="btn-pay" type="button" onclick="goToPayment()">
+          Pay £5 &amp; Join — powered by
+          <svg viewBox="0 0 60 25" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Stripe">
+            <path d="M4.5 10.2c0-.8.7-1.1 1.7-1.1 1.5 0 3.5.5 5 1.3V6.3C9.6 5.6 8 5.3 6.2 5.3 2.5 5.3 0 7.2 0 10.4c0 5 6.9 4.2 6.9 6.3 0 .9-.8 1.2-1.9 1.2-1.6 0-3.7-.7-5.3-1.6v4.2c1.8.8 3.6 1.1 5.3 1.1 3.8 0 6.4-1.9 6.4-5.1-.1-5.3-6.9-4.4-6.9-6.3zM18.8 2l-4.3 1-.1 13.5c0 2.5 1.9 4.3 4.4 4.3 1.4 0 2.4-.3 3-.6v-3.5c-.5.2-3.1 1-3.1-1.5v-5h3.1V6.8h-3.1L18.8 2zm7.9 4.8l-.3-1.5h-3.8v15.4h4.4v-10c1-1.4 2.8-1.1 3.3-.9V6.8c-.5-.2-2.5-.6-3.6 2zm5.5-1.5h4.4v15.4h-4.4V5.3zm0-4.1l4.4-1v3.5l-4.4 1V1.2zM47 5.3c-1.7 0-2.8.8-3.4 1.4l-.2-1.1h-3.9v20.6l4.4-1 .1-5c.6.4 1.5 1 3 1 3 0 5.8-2.4 5.8-7.8C52.8 8 50 5.3 47 5.3zm-1 12.2c-1 0-1.6-.4-2-.8l-.1-6.4c.4-.5 1.1-.9 2.1-.9 1.6 0 2.7 1.8 2.7 4-.1 2.3-1.2 4.1-2.7 4.1zM60 13c0-4.3-2.1-7.7-6.1-7.7-4 0-6.4 3.4-6.4 7.7 0 5.1 2.9 7.6 7 7.6 2 0 3.5-.5 4.7-1.2v-3.4c-1.1.6-2.5 1-4.1 1-1.6 0-3-.6-3.2-2.6H60c0-.2 0-1 0-1.4zm-8.2-1.6c0-1.9 1.2-2.7 2.2-2.7 1 0 2.1.8 2.1 2.7h-4.3z" fill="white"/>
+          </svg>
+        </button>
+        <p class="field-hint" style="text-align:center;margin-top:0.75rem;">You'll be taken to Stripe's secure payment page, then returned here to confirm.</p>
+      </div>
+
+      <!-- Submit button (shown after payment confirmed) -->
+      <div id="submit-btn-area" hidden>
+        <button class="btn-submit" type="button" onclick="submitForm()">Submit Application</button>
+      </div>
     </div>
 
     <div id="success-area" hidden>
@@ -469,17 +483,33 @@
       </div>
     </div>
 
+    <div id="submitting-area" hidden>
+      <div class="submitting-msg">Submitting your application…</div>
+    </div>
+
   </div>
 </main>
 
 <script>
-  // Always start with consent boxes unticked, regardless of browser cache
-  window.addEventListener('pageshow', () => {
-    document.getElementById('consent').checked = false;
-    document.getElementById('privacy').checked = false;
-  });
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKkT_PaSjoZDlunFKZBrklvhBnmN2UDJ7-6n1e-rqcwGm6QHfdoXE_3gG3CV2sE8sm/exec';
+  const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_cNi9AM1Do6D0dQMfnl8og00';
 
   let memberCount = 0;
+
+  // On load: check if returning from Stripe, or reset form
+  window.addEventListener('pageshow', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('paid') === '1') {
+      restoreAndSubmit();
+    } else {
+      // Reset form fields
+      document.querySelectorAll('input, select, textarea').forEach(el => {
+        if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+        else el.value = '';
+      });
+      sessionStorage.removeItem('fbwra_form');
+    }
+  });
 
   function toggleOtherTitle(sel, wrapperId) {
     document.getElementById(wrapperId).hidden = sel.value !== 'Other';
@@ -539,22 +569,7 @@
     if (el) el.remove();
   }
 
-  // Replace this URL with your deployed Apps Script web app URL
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKkT_PaSjoZDlunFKZBrklvhBnmN2UDJ7-6n1e-rqcwGm6QHfdoXE_3gG3CV2sE8sm/exec';
-
-  function submitForm() {
-    const required = document.querySelectorAll('[required]');
-    let ok = true;
-    required.forEach(el => {
-      if (el.type === 'checkbox' && !el.checked) ok = false;
-      if (el.type !== 'checkbox' && !el.value.trim()) ok = false;
-    });
-    if (!ok) {
-      alert('Please fill in all required fields and tick both checkboxes.');
-      return;
-    }
-
-    // Gather all form data
+  function gatherData() {
     const data = {
       title: document.getElementById('title').value,
       title_other: document.getElementById('title-other-input').value,
@@ -570,8 +585,6 @@
       newsletter: document.getElementById('newsletter').value,
       heard: document.getElementById('heard').value,
     };
-
-    // Additional household members
     let n = 1;
     while (document.getElementById('member-' + n)) {
       data[`member${n}_title`] = document.getElementById(`m${n}-title`)?.value || '';
@@ -582,10 +595,97 @@
       data[`member${n}_phone`] = document.getElementById(`m${n}-phone`)?.value || '';
       n++;
     }
+    return data;
+  }
 
-    const btn = document.querySelector('.btn-submit');
-    btn.disabled = true;
-    btn.textContent = 'Submitting…';
+  function validate() {
+    const required = document.querySelectorAll('[required]');
+    let ok = true;
+    required.forEach(el => {
+      if (el.type === 'checkbox' && !el.checked) ok = false;
+      if (el.type !== 'checkbox' && !el.value.trim()) ok = false;
+    });
+    return ok;
+  }
+
+  function goToPayment() {
+    if (!validate()) {
+      alert('Please fill in all required fields and tick both checkboxes.');
+      return;
+    }
+    // Save form data before leaving
+    sessionStorage.setItem('fbwra_form', JSON.stringify(gatherData()));
+    // Redirect to Stripe
+    window.location.href = STRIPE_PAYMENT_LINK;
+  }
+
+  function restoreAndSubmit() {
+    const saved = sessionStorage.getItem('fbwra_form');
+    if (!saved) {
+      // No saved data — just show the form normally
+      return;
+    }
+    const data = JSON.parse(saved);
+
+    // Show payment confirmed banner and submit button, hide pay button
+    document.getElementById('payment-banner').hidden = false;
+    document.getElementById('pay-btn-area').hidden = true;
+    document.getElementById('submit-btn-area').hidden = false;
+
+    // Restore fields
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    setVal('title', data.title);
+    if (data.title === 'Other') {
+      document.getElementById('title-other').hidden = false;
+      setVal('title-other-input', data.title_other);
+    }
+    setVal('first-name', data.first_name);
+    setVal('last-name', data.last_name);
+    setVal('email', data.email);
+    setVal('phone', data.phone);
+    setVal('door', data.door);
+    setVal('address1', data.address1);
+    setVal('address2', data.address2);
+    setVal('locality', data.locality);
+    setVal('postcode', data.postcode);
+    setVal('newsletter', data.newsletter);
+    setVal('heard', data.heard);
+
+    // Restore additional members
+    let n = 1;
+    while (data[`member${n}_first`] !== undefined) {
+      addMember();
+      setVal(`m${n}-title`, data[`member${n}_title`]);
+      setVal(`m${n}-title-text`, data[`member${n}_title_other`]);
+      setVal(`m${n}-first`, data[`member${n}_first`]);
+      setVal(`m${n}-last`, data[`member${n}_last`]);
+      setVal(`m${n}-email`, data[`member${n}_email`]);
+      setVal(`m${n}-phone`, data[`member${n}_phone`]);
+      n++;
+    }
+
+    // Restore checkboxes
+    document.getElementById('consent').checked = true;
+    document.getElementById('privacy').checked = true;
+  }
+
+  function submitForm() {
+    const required = document.querySelectorAll('[required]');
+    let ok = true;
+    required.forEach(el => {
+      if (el.type === 'checkbox' && !el.checked) ok = false;
+      if (el.type !== 'checkbox' && !el.value.trim()) ok = false;
+    });
+    if (!ok) {
+      alert('Please tick both declaration checkboxes to confirm.');
+      return;
+    }
+
+    document.getElementById('form-area').hidden = true;
+    document.getElementById('submitting-area').hidden = false;
+
+    const data = gatherData();
+    data.payment = 'stripe';
 
     fetch(SCRIPT_URL, {
       method: 'POST',
@@ -593,19 +693,19 @@
     })
     .then(r => r.json())
     .then(res => {
+      document.getElementById('submitting-area').hidden = true;
       if (res.status === 'ok') {
-        document.getElementById('form-area').hidden = true;
+        sessionStorage.removeItem('fbwra_form');
         document.getElementById('success-area').hidden = false;
       } else {
+        document.getElementById('form-area').hidden = false;
         alert('Something went wrong: ' + (res.message || 'please try again.'));
-        btn.disabled = false;
-        btn.textContent = 'Submit Application';
       }
     })
     .catch(() => {
+      document.getElementById('submitting-area').hidden = true;
+      document.getElementById('form-area').hidden = false;
       alert('Could not submit the form. Please check your connection and try again.');
-      btn.disabled = false;
-      btn.textContent = 'Submit Application';
     });
   }
 </script>
