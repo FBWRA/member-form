@@ -698,6 +698,8 @@
       document.getElementById('submitting-area').hidden = true;
       if (res.status === 'ok') {
         sessionStorage.removeItem('fbwra_form');
+        // Clear the ?paid=1&session_id=... from the URL so a refresh starts fresh
+        history.replaceState(null, '', window.location.pathname);
         document.getElementById('success-area').hidden = false;
       } else {
         document.getElementById('form-area').hidden = false;
