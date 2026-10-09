@@ -12,7 +12,7 @@
     --accent-light: #2a5298;
     --fg: #1a1a2e;
     --muted: #4a5568;
-    --border: #b2d8e0;
+    --border: #888888;
     --header-sub: #2a5298;
     --input-bg: #ffffff;
     --error: #c0392b;
@@ -187,7 +187,9 @@
 
   /* Payment button */
   .btn-pay {
-    width: 100%;
+    width: auto;
+    display: block;
+    margin: 0 auto;
     background: #635bff;
     color: #fff;
     border: none;
@@ -339,8 +341,8 @@
 <header class="site-header">
   <img src="fbwra_logo_clean2.png" alt="FBWRA Logo">
   <h1>Friern Barnet &amp; Whetstone Residents Association</h1>
-  <h2>Become a Member</h2>
-  <p class="header-intro">Join us to help influence what happens in our area. We represent residents of Friern Barnet, Whetstone and North Finchley.<br><br><strong>Membership costs just £5 per year per household.</strong></p>
+  <h2 style="font-size:clamp(1.4rem,5vw,2rem);letter-spacing:0.08em;">JOIN US!</h2>
+  <p class="header-intro">Help influence what happens in our area. We represent residents of Friern Barnet, Whetstone and North Finchley.<br><br><strong>Membership costs just £5 per year per household.</strong></p>
 </header>
 
 <main class="form-wrap">
@@ -436,13 +438,6 @@
         </div>
       </div>
 
-      <div class="field-group">
-        <div class="field">
-          <label for="heard">How did you hear about FBWRA?</label>
-          <input type="text" id="heard" name="heard">
-        </div>
-      </div>
-
       <p class="section-title">Declaration</p>
       <div class="consent-block">
         <input type="checkbox" id="consent" name="consent" required autocomplete="off">
@@ -462,12 +457,14 @@
       <!-- Pay button (shown before payment) -->
       <div id="pay-btn-area">
         <button class="btn-pay" type="button" onclick="goToPayment()">
-          Pay £5 &amp; Join — powered by
-          <svg viewBox="0 0 60 25" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Stripe">
-            <path d="M4.5 10.2c0-.8.7-1.1 1.7-1.1 1.5 0 3.5.5 5 1.3V6.3C9.6 5.6 8 5.3 6.2 5.3 2.5 5.3 0 7.2 0 10.4c0 5 6.9 4.2 6.9 6.3 0 .9-.8 1.2-1.9 1.2-1.6 0-3.7-.7-5.3-1.6v4.2c1.8.8 3.6 1.1 5.3 1.1 3.8 0 6.4-1.9 6.4-5.1-.1-5.3-6.9-4.4-6.9-6.3zM18.8 2l-4.3 1-.1 13.5c0 2.5 1.9 4.3 4.4 4.3 1.4 0 2.4-.3 3-.6v-3.5c-.5.2-3.1 1-3.1-1.5v-5h3.1V6.8h-3.1L18.8 2zm7.9 4.8l-.3-1.5h-3.8v15.4h4.4v-10c1-1.4 2.8-1.1 3.3-.9V6.8c-.5-.2-2.5-.6-3.6 2zm5.5-1.5h4.4v15.4h-4.4V5.3zm0-4.1l4.4-1v3.5l-4.4 1V1.2zM47 5.3c-1.7 0-2.8.8-3.4 1.4l-.2-1.1h-3.9v20.6l4.4-1 .1-5c.6.4 1.5 1 3 1 3 0 5.8-2.4 5.8-7.8C52.8 8 50 5.3 47 5.3zm-1 12.2c-1 0-1.6-.4-2-.8l-.1-6.4c.4-.5 1.1-.9 2.1-.9 1.6 0 2.7 1.8 2.7 4-.1 2.3-1.2 4.1-2.7 4.1zM60 13c0-4.3-2.1-7.7-6.1-7.7-4 0-6.4 3.4-6.4 7.7 0 5.1 2.9 7.6 7 7.6 2 0 3.5-.5 4.7-1.2v-3.4c-1.1.6-2.5 1-4.1 1-1.6 0-3-.6-3.2-2.6H60c0-.2 0-1 0-1.4zm-8.2-1.6c0-1.9 1.2-2.7 2.2-2.7 1 0 2.1.8 2.1 2.7h-4.3z" fill="white"/>
-          </svg>
+          Pay £5 and join
         </button>
-        <p class="field-hint" style="text-align:center;margin-top:0.75rem;">You'll be taken to Stripe's secure payment page, then returned here to confirm.</p>
+        <p class="field-hint" style="text-align:center;margin-top:0.75rem;">Payment can be made by credit/debit card, Apple Pay, Google Pay, PayPal, or banking app.<br><strong>You'll be taken to Stripe's secure payment page, then returned here to confirm.</strong></p>
+        <div style="text-align:center;margin-top:1rem;">
+          <a href="https://stripe.com" target="_blank" rel="noopener">
+            <img src="powered_by_stripe_blurple.svg" alt="Powered by Stripe" style="height:26px;">
+          </a>
+        </div>
       </div>
 
       <!-- Submit button (shown after payment confirmed) -->
@@ -491,7 +488,7 @@
 </main>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyevCXxJ3OBBndbbO-lx-kwhhfZ4MXW7CmcaIt2w5bMwwg98ScWNiFTAc5-wnOqqELb/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbza4GK5Hxh2R4Ry9l6hQtVzfHhFU3dz-yd0yPYhegm-Uon-xr-NcJRoJxJTzMugoPO3/exec';
   const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_cNi9AM1Do6D0dQMfnl8og00';
 
   let memberCount = 0;
@@ -583,7 +580,6 @@
       locality: document.getElementById('locality').value,
       postcode: document.getElementById('postcode').value,
       newsletter: document.getElementById('newsletter').value,
-      heard: document.getElementById('heard').value,
     };
     let n = 1;
     while (document.getElementById('member-' + n)) {
@@ -649,7 +645,6 @@
     setVal('locality', data.locality);
     setVal('postcode', data.postcode);
     setVal('newsletter', data.newsletter);
-    setVal('heard', data.heard);
 
     // Restore additional members
     let n = 1;
