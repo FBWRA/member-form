@@ -491,7 +491,7 @@
 </main>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKkT_PaSjoZDlunFKZBrklvhBnmN2UDJ7-6n1e-rqcwGm6QHfdoXE_3gG3CV2sE8sm/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyevCXxJ3OBBndbbO-lx-kwhhfZ4MXW7CmcaIt2w5bMwwg98ScWNiFTAc5-wnOqqELb/exec';
   const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_cNi9AM1Do6D0dQMfnl8og00';
 
   let memberCount = 0;
@@ -686,6 +686,8 @@
 
     const data = gatherData();
     data.payment = 'stripe';
+    const sessionId = new URLSearchParams(window.location.search).get('session_id');
+    if (sessionId) data.stripe_session_id = sessionId;
 
     fetch(SCRIPT_URL, {
       method: 'POST',
