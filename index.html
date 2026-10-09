@@ -474,7 +474,7 @@
     <div id="success-area" hidden>
       <div class="success-msg">
         ✓ Thank you for joining FBWRA!<br>
-        We'll be in touch shortly to confirm your membership.
+        We'll be in touch shortly with your membership details.
       </div>
     </div>
 
@@ -624,6 +624,7 @@
     // Show submit button, hide pay button
     document.getElementById('pay-btn-area').hidden = true;
     document.getElementById('submit-btn-area').hidden = false;
+    setTimeout(() => document.getElementById('submit-btn-area').scrollIntoView({ behavior: 'smooth' }), 100);
 
     // Restore fields
     const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
