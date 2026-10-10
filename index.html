@@ -705,6 +705,13 @@
     document.getElementById('submitting-area').hidden = false;
 
     const data = gatherData();
+    // Re-attach metadata saved before Stripe redirect
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('fbwra_form') || '{}');
+      ['_meta_timestamp','_meta_useragent','_meta_language','_meta_referrer','_meta_screen','_meta_ip'].forEach(k => {
+        if (saved[k]) data[k] = saved[k];
+      });
+    } catch(_) {}
     data.payment = 'stripe';
     const sessionId = new URLSearchParams(window.location.search).get('session_id');
     if (sessionId) data.stripe_session_id = sessionId;
