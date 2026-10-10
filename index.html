@@ -430,13 +430,14 @@
         </div>
       </div>
 
-      <p class="section-title">Newsletter Delivery <span class="req">*</span></p>
+      <p class="section-title">Newsletter Delivery <span style="text-transform:none;">(quarterly)</span> <span class="req">*</span></p>
       <div class="field-group" style="margin-bottom:1.5rem;">
-        <div class="field" style="width:40%;">
+        <div class="field" style="width:100%;">
           <select id="newsletter" name="newsletter" required>
             <option value="">Click to choose</option>
             <option value="email">Email</option>
-            <option value="hand">By hand to house</option>
+            <option value="hand">By hand (Friern Barnet &amp; Whetstone only)</option>
+            <option value="post">Post (please add £6 to membership fee for p&amp;p)</option>
           </select>
         </div>
       </div>
@@ -462,7 +463,7 @@
         <button class="btn-pay" type="button" onclick="goToPayment()">
           Pay £5 and join
         </button>
-        <p class="field-hint" style="text-align:center;margin-top:0.75rem;"><strong>Membership is £5 per household. If you'd like to make a donation on top, simply enter a higher amount on the payment page — donations are always gratefully received!</strong><br><br>Payment can be made by credit/debit card, Apple Pay, Google Pay, PayPal, or banking app.<br><strong>You'll be taken to Stripe's secure payment page, then returned here to confirm.</strong></p>
+        <p class="field-hint" style="text-align:center;margin-top:0.75rem;"><strong>Membership is £5 per household. If you'd like to make a donation on top, simply enter a higher amount on the payment page — donations are always gratefully received!</strong><br><br>Multiple payment options, including credit/debit card, Apple Pay, Google Pay, Amazon Pay and banking app/web portal.<br><strong>You'll be taken to Stripe's secure payment page, then returned here to confirm.</strong></p>
         <div style="text-align:center;margin-top:1rem;">
           <a href="https://stripe.com" target="_blank" rel="noopener">
             <img src="Powered by Stripe - blurple.svg" alt="Powered by Stripe" style="height:26px;">
@@ -494,7 +495,7 @@
 </main>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNP_wcxAz-5ifYrcVJFvAbiIRh4qz4pc5UWJAAg0vzx3ypS4PttW5_cAvl3ZTKmzXc/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkyATCriCbLIWvDVI0jROuIs4s4AcT4iD8Bu5O0gCMobVrzLk3ocA0K3kIZlDpk0Z_/exec';
   const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_28EfZa3Lw5yW8ws4IH8og01';
 
   let memberCount = 0;
