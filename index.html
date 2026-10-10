@@ -494,7 +494,7 @@
 </main>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbza4GK5Hxh2R4Ry9l6hQtVzfHhFU3dz-yd0yPYhegm-Uon-xr-NcJRoJxJTzMugoPO3/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNP_wcxAz-5ifYrcVJFvAbiIRh4qz4pc5UWJAAg0vzx3ypS4PttW5_cAvl3ZTKmzXc/exec';
   const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_28EfZa3Lw5yW8ws4IH8og01';
 
   let memberCount = 0;
@@ -610,13 +610,31 @@
     return ok;
   }
 
-  function goToPayment() {
+  async function goToPayment() {
     if (!validate()) {
       alert('Please fill in all required fields and tick both checkboxes.');
       return;
     }
+    const data = gatherData();
+
+    // Collect submission metadata
+    data._meta_timestamp   = new Date().toISOString();
+    data._meta_useragent   = navigator.userAgent;
+    data._meta_language    = navigator.language;
+    data._meta_referrer    = document.referrer || '(direct / none)';
+    data._meta_screen      = screen.width + 'x' + screen.height;
+
+    // Fetch public IP (best-effort; continue without it if it fails)
+    try {
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipJson = await ipRes.json();
+      data._meta_ip = ipJson.ip;
+    } catch (_) {
+      data._meta_ip = '(unavailable)';
+    }
+
     // Save form data before leaving
-    sessionStorage.setItem('fbwra_form', JSON.stringify(gatherData()));
+    sessionStorage.setItem('fbwra_form', JSON.stringify(data));
     // Redirect to Stripe
     window.location.href = STRIPE_PAYMENT_LINK;
   }
